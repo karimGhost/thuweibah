@@ -55,25 +55,18 @@ const [otherUser, setOtherUser] = useState<User >(dummyUser);
 
 useEffect(() => {
   if (!uid) return;
-let useron = false;
 
 
   if (uid === '8ysoujfi0QTjz2qLouaqzS80hcC3') {
 
- const statusRef = ref(rtdb, `/status/${'rWyRWnVsH8g0QlrcBp0KObBFQbI3'}`);
-
-  onValue(statusRef, (snapshot) => {
-    const status = snapshot.val();
-    console.log(`${uid} is currently`, status?.state);
-useron = status?.state;
-  });
+ 
 
 
 
     setCurrentUser({
       id: uid,
       name: 'Thuweibah',
-      avatarUrl: 'https://placehold.co/80x80.png',
+      avatarUrl: "/image/T.png",
       dataAiHint: 'woman portrait',
       online: true,
     });
@@ -81,26 +74,20 @@ useron = status?.state;
     setOtherUser({
       id: 'rWyRWnVsH8g0QlrcBp0KObBFQbI3',
       name: 'karim',
-      avatarUrl: 'https://placehold.co/80x80.png',
+      avatarUrl: "/image/K.png",
       dataAiHint: 'man portrait',
-      online: useron,
+      online: false,
     });
   } else {
 
 
 const statusRef = ref(rtdb, `/status/${'8ysoujfi0QTjz2qLouaqzS80hcC3'}`);
- 
-  onValue(statusRef, (snapshot) => {
-    const status = snapshot.val();
-    console.log(`${uid} is currently`, status?.state);
-useron = status?.state;
-  });
 
 
     setCurrentUser({
       id: uid,
       name: 'karim',
-      avatarUrl: 'https://placehold.co/80x80.png',
+      avatarUrl:"/image/K.png",
       dataAiHint: 'man portrait',
       online: true,
     });
@@ -108,14 +95,37 @@ useron = status?.state;
     setOtherUser({
       id: '8ysoujfi0QTjz2qLouaqzS80hcC3',
       name: 'Thuweibah',
-      avatarUrl: 'https://placehold.co/80x80.png',
+      avatarUrl:"/image/T.png",
       dataAiHint: 'woman portrait',
-      online: useron,
+      online: false,
     });
   }
 }, [uid]);
 
 
+
+
+
+useEffect(() => {
+
+  const otherUserId = uid === 'rWyRWnVsH8g0QlrcBp0KObBFQbI3' ?  "8ysoujfi0QTjz2qLouaqzS80hcC3"  : 'rWyRWnVsH8g0QlrcBp0KObBFQbI3' ;
+  const statusRef = ref(rtdb, `/status/${otherUserId}`);
+
+  const unsubscribe = onValue(statusRef, (snapshot) => {
+    const status = snapshot.val();
+    console.log(`${otherUserId} is currently`, status?.state);
+
+    if (status && status.state) {
+      setOtherUser((prev) =>
+        prev ? { ...prev, online: status.state === 'online' } : prev
+      );
+    }
+  });
+
+  return () => {
+    unsubscribe(); // clean up on unmount
+  };
+}, []);
 
 
   const [messages, setMessages] = useState<Message[]>([]);
