@@ -67,7 +67,7 @@ useEffect(() => {
   } else {
 
 
-const statusRef = ref(rtdb, `/status/${'8ysoujfi0QTjz2qLouaqzS80hcC3'}`);
+// const statusRef = ref(rtdb, `/status/${'8ysoujfi0QTjz2qLouaqzS80hcC3'}`);
 
 
     setCurrentUser({
@@ -103,7 +103,7 @@ useEffect(() => {
 
     if (status && status.state) {
       setOtherUser((prev) =>
-        prev ? { ...prev, online: status.state === 'online' } : prev
+        prev ? { ...prev, online: otherUserId === uid &&  status.state === 'online' } : prev
       );
     }
   });
