@@ -11,21 +11,7 @@ import { boolean } from 'zod';
 import { auth, rtdb } from '@/lib/firebase';
 import {  ref, onValue, set } from 'firebase/database';
 
-const currentUer: User = {
-  id: 'thuwei',
-  name: 'Thuweibah',
-  avatarUrl: 'https://placehold.co/80x80.png',
-  dataAiHint: 'woman portrait',
-  online: true,
-};
 
-const otherUsr: User = {
-  id: 'karim',
-  name: 'karim',
-  avatarUrl: 'https://placehold.co/80x80.png',
-  dataAiHint: 'man portrait',
-  online: true,
-};
 
 export default function ChatPageClient() {
 
@@ -38,7 +24,7 @@ const {uid} = useAuth();
 const dummyUser: User = {
   id: '',
   name: 'Loading...',
-  avatarUrl: 'https://placehold.co/80x80.png',
+  avatarUrl: '',
   dataAiHint: '',
   online: false,
 };
