@@ -4,6 +4,7 @@ import ChatPageClient from '@/components/chat/ChatPageClient';
 import LoginPage from './Login/page';
 import { useAuth } from '@/components/useAuth';
 import { useEffect, useState } from 'react';
+import InstallPrompt from '@/components/InstallPrompt';
 export default function Home() {
 
   const {uid} = useAuth();
@@ -21,7 +22,26 @@ export default function Home() {
     }
   }, [uid]);
 
-  if (loading || !userid) {
+
+
+const [isin, setisin] = useState(false);
+  
+const isInStandaloneMode = () =>
+  window.matchMedia('(display-mode: standalone)').matches ||
+    (window.navigator as any).standalone === true;
+
+    useEffect(() => {
+      if (isInStandaloneMode() === true){
+  
+setisin(true)
+
+      }
+    }, [] );
+ 
+
+
+
+  if (loading ) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-100">
         <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500"></div>
@@ -30,11 +50,16 @@ export default function Home() {
   }
 
 
+
   return (
         <> 
-        {uid ?  
+        {uid ? 
+        <>
+         { isin ? <></> :   <InstallPrompt />  }
 
  <ChatPageClient />
+        </> 
+    
 
   : 
 
