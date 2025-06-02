@@ -102,8 +102,9 @@ useEffect(() => {
     console.log(`${otherUserId} is currently`, status?.state);
 
     if (status && status.state) {
+      otherUserId !== uid &&  
       setOtherUser((prev) =>
-        prev ? { ...prev, online: otherUserId === uid &&  status.state === 'online' } : prev
+        prev ? { ...prev, online: status.state === 'online' } : prev
       );
     }
   });
@@ -111,7 +112,7 @@ useEffect(() => {
   return () => {
     unsubscribe(); // clean up on unmount
   };
-}, []);
+}, [uid]);
 
 
   const [messages, setMessages] = useState<Message[]>([]);
