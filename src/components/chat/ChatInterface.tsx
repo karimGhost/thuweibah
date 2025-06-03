@@ -27,8 +27,8 @@ const {uid} = useAuth();
   }, [messages]);
 
   return (
-    <Card className="h-full flex flex-col shadow-lg rounded-lg">
-      <CardHeader className="p-4 border-b border-border flex flex-row items-center gap-3 bg-card fixed " style={{zIndex:"99"}}>
+    <Card className="h-full flex flex-col shadow-lg rounded-lg fixed" style={{ left:"0",right:"0" }}>
+      <CardHeader className="p-4 border-b border-border flex flex-row items-center gap-3 bg-card fixed " style={{zIndex:"99" , left:"0",right:"0", top:"0" }}>
         <Image
           src={otherUser.avatarUrl || "/image/K.png"}
           alt={`${otherUser.name}'s avatar`}

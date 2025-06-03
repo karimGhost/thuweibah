@@ -58,7 +58,8 @@ export default function InstallPrompt() {
 
     <button
       onClick={handleInstall}
-      className="fixed bottom-4 right-4 p-3 rounded-lg bg-black text-white shadow-xl"
+      style={{zIndex:"99"}}
+      className="fixed  bottom-4 right-4 p-3 rounded-lg bg-black text-white shadow-xl"
     >
       Add to Home Screen
     </button>
