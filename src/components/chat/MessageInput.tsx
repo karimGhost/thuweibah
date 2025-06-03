@@ -58,7 +58,7 @@ export default function MessageInput({ onSendMessage, replyTo = null, onCancelRe
   };
   return (
  <div
-      className={cn('flex flex-col w-full animate-message-in', )}
+      className={cn('flex flex-col w-full animate-message-in fixed bottom', )}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       // You can add mouse events similarly if you want desktop swipe support

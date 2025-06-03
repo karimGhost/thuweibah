@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc } from "firebase/firestore";
 import { db } from '@/lib/firebase';
 import type { User, Message } from '@/lib/types';
 import ChatLayout from './ChatLayout';
@@ -11,6 +11,7 @@ import { boolean } from 'zod';
 import { auth, rtdb } from '@/lib/firebase';
 import {  ref, onValue, set } from 'firebase/database';
 import { updateDoc } from 'firebase/firestore';
+
 import { off } from 'firebase/database';
 export default function ChatPageClient() {
 
