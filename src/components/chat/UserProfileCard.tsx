@@ -15,8 +15,8 @@ export default function UserProfileCard({ user }: UserProfileCardProps) {
       <CardContent className="p-4 flex flex-col items-center text-center">
         <div className="relative mb-3">
           <Image
-            src={user.avatarUrl}
-            alt={`${user.name}'s avatar`}
+            src={"/image/K.png"}
+            alt={`${user?.name}'s avatar`}
             width={80}
             height={80}
             data-ai-hint={user.dataAiHint}

@@ -10,9 +10,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { boolean } from 'zod';
 import { auth, rtdb } from '@/lib/firebase';
 import {  ref, onValue, set } from 'firebase/database';
-
-
-
+import { updateDoc } from 'firebase/firestore';
+import { off } from 'firebase/database';
 export default function ChatPageClient() {
 
 
@@ -64,6 +63,7 @@ useEffect(() => {
       dataAiHint: 'man portrait',
       online: false,
     });
+
   } else {
 
 
@@ -91,18 +91,16 @@ useEffect(() => {
 
 
 
-
 useEffect(() => {
+  const otherUserId = uid === 'rWyRWnVsH8g0QlrcBp0KObBFQbI3'
+    ? '8ysoujfi0QTjz2qLouaqzS80hcC3'
+    : 'rWyRWnVsH8g0QlrcBp0KObBFQbI3';
 
-  const otherUserId = uid === 'rWyRWnVsH8g0QlrcBp0KObBFQbI3' ?  "8ysoujfi0QTjz2qLouaqzS80hcC3"  : 'rWyRWnVsH8g0QlrcBp0KObBFQbI3' ;
   const statusRef = ref(rtdb, `/status/${otherUserId}`);
 
   const unsubscribe = onValue(statusRef, (snapshot) => {
     const status = snapshot.val();
-    console.log(`${otherUserId} is currently`, status?.state);
-
-    if (status && status.state) {
-      otherUserId !== uid &&  
+    if (status?.state) {
       setOtherUser((prev) =>
         prev ? { ...prev, online: status.state === 'online' } : prev
       );
@@ -110,37 +108,87 @@ useEffect(() => {
   });
 
   return () => {
-    unsubscribe(); // clean up on unmount
+    unsubscribe(); // ✅ this is correct and will stop listening on unmount
   };
 }, [uid]);
 
 
+
   const [messages, setMessages] = useState<Message[]>([]);
 
+
+
+
+
+  // useEffect(() => {
+  //   const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
+
+  //   const unsubscribe = onSnapshot(q, (snapshot) => {
+  //     const msgs: Message[] = snapshot.docs.map(doc => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //       timestamp: doc.data().timestamp?.toDate() ?? new Date(),
+  //     })) as Message[];
+  //     setMessages(msgs);
+  //     console.log("Message:", msgs);
+
+  //   });
+
+  //   //set last message on the db status as read
+
+  //   return () => unsubscribe();
+  // }, []);
+
+
+
+
   useEffect(() => {
-    const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
+  const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs: Message[] = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        timestamp: doc.data().timestamp?.toDate() ?? new Date(),
-      })) as Message[];
-      setMessages(msgs);
-    });
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const msgs: Message[] = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      timestamp: doc.data().timestamp?.toDate() ?? new Date(),
+    })) as Message[];
 
-    return () => unsubscribe();
-  }, []);
+    setMessages(msgs);
 
-  const handleSendMessage = async (text: string) => {
+    // 🔄 Mark the last message as read if it's from the other user
+    const lastMessage = msgs[msgs.length - 1];
+    if (lastMessage && lastMessage.id !== currentUser.id && lastMessage.status !== "read") {
+      updateDoc(doc(db, "messages", lastMessage.id), {
+        status: "read"
+      }).catch(err => console.error("Failed to update status:", err));
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
+
+
+
+const handleSendMessage = async (text: string, replyTo?: Message | null) => {
+    const newId = crypto.randomUUID(); // ✅ native way to generate unique ID
+
     await addDoc(collection(db, "messages"), {
       text,
-      id: currentUser?.id,
+      id: uid,
+      ids: newId  ,
       timestamp: serverTimestamp(),
        avatarUrl: 'https://placehold.co/80x80.png',
       status: 'sent',
+     replyToId: replyTo?.ids ?? null,
+
     });
+
+    console.log("vow", replyTo?.ids)
+    console.log("vow2", replyTo)
   };
+
+
+ 
+
 
 
 
@@ -153,3 +201,5 @@ useEffect(() => {
     />
   );
 }
+
+

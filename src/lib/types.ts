@@ -10,8 +10,12 @@ export type MessageStatus = 'sent' | 'delivered' | 'read';
 
 export interface Message {
   id: string;
+  ids: string;
   text: string;
   senderId: string;
   timestamp: Date;
   status: MessageStatus;
+  replyToId?: string | null; 
 }
+
+
